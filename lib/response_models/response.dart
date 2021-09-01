@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final response = responseFromJson(jsonString);
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -35,8 +31,6 @@ class Response with ChangeNotifier {
         options: json["options"] == null
             ? null
             : List<Option>.from(json["options"].map((x) => Option.fromJson(x))),
-
-            
       );
 
   Map<String, dynamic> toJson() => {

@@ -1,5 +1,5 @@
 class Constant {
-  static String dummyData = """ [{
+  static String testData = """ [{
     "label": "Full Name",
     "type": "textfield",
     "placeholder": "Enter full name",

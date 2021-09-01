@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_app/constants/dummy_data.dart';
-import 'package:test_app/models/response.dart';
-import 'package:test_app/provider/my_provider.dart';
+import 'package:test_app/constants/test_data.dart';
+import 'package:test_app/provider/test_provider.dart';
+import 'package:test_app/response_models/response.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,13 +12,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => MyProvider(),
+      create: (context) => TestProivder(),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: MyHomePage(title: 'Flutter Demo Home Page'),
+        home: MyHomePage(title: 'Test'),
       ),
     );
   }
@@ -35,14 +35,26 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late List<Response> response;
-  MyProvider? myProvider;
+  TestProivder? testProivder;
 
   @override
   void initState() {
-    getResponse();
+    response = responseFromJson(Constant.testData);
+
     Future.delayed(Duration.zero, () async {
       for (int i = 0; i <= response.length; i++) {
-        myProvider!.updateCheckbox(i, response[4].options![i].checked as bool);
+        testProivder!
+            .updateCheckbox(i, response[4].options![i].checked as bool);
+        if (response[i].label == 'Gender') {
+          print(i);
+          print(response[i].value);
+
+          try {
+            testProivder!.updateRadio(int.parse(response[2].value));
+          } catch (e) {
+            print(e);
+          }
+        }
       }
     });
 
@@ -51,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    myProvider = Provider.of<MyProvider>(context);
+    testProivder = Provider.of<TestProivder>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -82,11 +94,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                 itemBuilder: (BuildContext context, int index) {
                                   return Row(children: [
                                     Checkbox(
-                                        value: myProvider!.map[index] == null
+                                        value: testProivder!.map[index] == null
                                             ? false
-                                            : myProvider!.map[index],
+                                            : testProivder!.map[index],
                                         onChanged: (value) {
-                                          myProvider!.updateCheckbox(
+                                          testProivder!.updateCheckbox(
                                               index, value as bool);
                                         }),
                                     Text(response[4]
@@ -127,43 +139,23 @@ class _MyHomePageState extends State<MyHomePage> {
                                                         .options![index]
                                                         .value
                                                         .toString()),
-                                                    value: index
-                                                    //  int.parse(
-                                                    //     response[2].value)
-                                                    ,
-                                                    groupValue: myProvider!
+                                                    value: index,
+                                                    groupValue: testProivder!
                                                         .selectedRadio,
                                                     onChanged: (ind) =>
-                                                        myProvider!
-                                                            .setSelectedRadio(
+                                                        testProivder!
+                                                            .updateRadio(
                                                                 ind as int),
                                                   ),
                                                 ],
                                               );
                                             })
-                                        : Text('');
+                                        : Text('No data found');
                   })
             ],
           ),
         ),
       ),
     );
-  }
-
-  bool showChecked(int index, MyProvider? provider) {
-    bool isSelected = false;
-    if (response[4].options![index].checked == true) {
-      isSelected = true;
-      provider!.updateCheckbox(index, true);
-    } else {
-      provider!.updateCheckbox(index, false);
-      isSelected = false;
-    }
-
-    return isSelected;
-  }
-
-  void getResponse() {
-    response = responseFromJson(Constant.dummyData);
   }
 }

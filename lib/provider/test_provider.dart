@@ -2,14 +2,12 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
-class MyProvider with ChangeNotifier {
+class TestProivder with ChangeNotifier {
   int? selectedRadio;
 
   HashMap<int, bool> map = new HashMap();
 
-  HashMap<int, Object> selectedRadioMap = new HashMap();
-
-  setSelectedRadio(int? value) {
+  updateRadio(int? value) {
     selectedRadio = value;
     notifyListeners();
   }
@@ -18,9 +16,4 @@ class MyProvider with ChangeNotifier {
     map[positon] = selected;
     notifyListeners();
   }
-
-  // updateRadio(int positon, Object selected) {
-  //   selectedRadioMap[positon] = selected;
-  //   notifyListeners();
-  // }
 }
